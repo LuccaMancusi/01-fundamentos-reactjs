@@ -55,3 +55,14 @@
   background: var(--green-500);
   color: var(--white);
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    margin: 0 5rem;
+  }
+}
+@media (max-width: 500px) {
+  .sidebar {
+    margin: 0;
+  }
+}

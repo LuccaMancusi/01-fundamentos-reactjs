@@ -9,7 +9,7 @@ function App() {
     <>
       <Header></Header>
       <div className={styles.wrapper}>
-        <Sidebar></Sidebar>
+        <Sidebar className={styles.sidebar}></Sidebar>
 
         <main>
           <Post />
