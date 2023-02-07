@@ -1,3 +1,4 @@
+import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 import styles from "./Post.module.css";
 
@@ -6,10 +7,7 @@ function Post(props) {
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <img
-            className={styles.avatar}
-            src="https://github.com/LuccaMancusi.png"
-          />
+          <Avatar src="https://github.com/LuccaMancusi.png" />
           <div className={styles.authorInfo}>
             <strong>Lucca Mancusi</strong>
             <span>Front-end developer</span>
