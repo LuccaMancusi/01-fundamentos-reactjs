@@ -3,8 +3,11 @@ import { Avatar } from "./Avatar";
 import styles from "./Comment.module.css";
 import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
+import { useState } from "react";
 
 export function Comment({ content, date, onDeleteComment }) {
+  const [likeCount, setLikeCount] = useState(0);
+
   const dateFormated = format(date, "dd 'de' MMMM 'às' HH:mm'h' ", {
     locale: ptBR,
   });
@@ -16,6 +19,10 @@ export function Comment({ content, date, onDeleteComment }) {
 
   function handleDeleteComment() {
     onDeleteComment(content);
+  }
+
+  function handleAddLike() {
+    setLikeCount(likeCount + 1);
   }
 
   return (
@@ -38,9 +45,9 @@ export function Comment({ content, date, onDeleteComment }) {
           <p>{content}</p>
         </div>
         <footer>
-          <button>
+          <button onClick={handleAddLike}>
             <ThumbsUp></ThumbsUp>
-            Aplaudir <span>20</span>
+            Aplaudir <span>{likeCount}</span>
           </button>
         </footer>
       </div>
