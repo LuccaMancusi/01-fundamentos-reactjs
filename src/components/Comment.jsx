@@ -4,7 +4,7 @@ import styles from "./Comment.module.css";
 import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 
-export function Comment({ content, date }) {
+export function Comment({ content, date, onDeleteComment }) {
   const dateFormated = format(date, "dd 'de' MMMM 'às' HH:mm'h' ", {
     locale: ptBR,
   });
@@ -13,6 +13,10 @@ export function Comment({ content, date }) {
     locale: ptBR,
     addSuffix: true,
   });
+
+  function handleDeleteComment() {
+    onDeleteComment(content);
+  }
 
   return (
     <div className={styles.comment}>
@@ -27,7 +31,7 @@ export function Comment({ content, date }) {
                 {dateRelativeToNow}
               </time>
             </div>
-            <button title="Deletar comentário">
+            <button onClick={handleDeleteComment} title="Deletar comentário">
               <Trash size={24}></Trash>
             </button>
           </header>

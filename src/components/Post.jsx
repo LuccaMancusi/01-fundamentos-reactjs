@@ -14,10 +14,18 @@ function Post({ author, content, publishedAt }) {
     const date = new Date();
     const commentObject = { content: comment, date };
     setComments([...comments, commentObject]);
+    setComment("");
   }
 
   function handleCommentText(e) {
     setComment(e.target.value);
+  }
+
+  function deleteComment(commentToBeDeleted) {
+    const commentsWithoutDeletedOne = comments.filter((comment) => {
+      return commentToBeDeleted !== comment.content;
+    });
+    setComments(commentsWithoutDeletedOne);
   }
 
   const publishedAtFormated = format(
@@ -32,6 +40,8 @@ function Post({ author, content, publishedAt }) {
     locale: ptBR,
     addSuffix: true,
   });
+
+  const isCommentEmpty = comment === "";
 
   return (
     <article className={styles.post}>
@@ -51,10 +61,10 @@ function Post({ author, content, publishedAt }) {
       <div className={styles.content}>
         {content.map((line) => {
           if (line.type === "paragraph") {
-            return <p>{line.content}</p>;
+            return <p key={line.content}>{line.content}</p>;
           } else if (line.type === "link") {
             return (
-              <p>
+              <p key={line.content}>
                 <a href="#">{line.content}</a>
               </p>
             );
@@ -64,16 +74,26 @@ function Post({ author, content, publishedAt }) {
       <form onSubmit={handleAddComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
         <textarea
+          value={comment}
           onChange={handleCommentText}
           placeholder="Deixe um comentário"
         />
         <footer>
-          <button type="submit">Publicar</button>
+          <button disabled={isCommentEmpty} type="submit">
+            Publicar
+          </button>
         </footer>
       </form>
       <div className={styles.commentList}>
         {comments.map((comment) => {
-          return <Comment content={comment.content} date={comment.date} />;
+          return (
+            <Comment
+              onDeleteComment={deleteComment}
+              key={comment.content}
+              content={comment.content}
+              date={comment.date}
+            />
+          );
         })}
       </div>
     </article>
