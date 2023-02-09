@@ -1,48 +1,80 @@
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 import styles from "./Post.module.css";
+import { format, formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+import { useEffect, useState } from "react";
 
-function Post(props) {
-  console.log(props);
+function Post({ author, content, publishedAt }) {
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+
+  function handleAddComment(event) {
+    event.preventDefault();
+    const date = new Date();
+    const commentObject = { content: comment, date };
+    setComments([...comments, commentObject]);
+  }
+
+  function handleCommentText(e) {
+    setComment(e.target.value);
+  }
+
+  const publishedAtFormated = format(
+    publishedAt,
+    "dd 'de' MMMM 'às' HH:mm'h' ",
+    {
+      locale: ptBR,
+    }
+  );
+
+  const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: true,
+  });
+
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src="https://github.com/LuccaMancusi.png" />
+          <Avatar src={author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>Lucca Mancusi</strong>
-            <span>Front-end developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
 
-        <time title="07 de fevereiro às 12:44 " dateTime="2023-02-07 12:43">
-          Publicado há 1h
+        <time title={publishedAtFormated} dateTime={publishedAt.toISOString()}>
+          {publishedDateRelativeToNow}
         </time>
       </header>
       <div className={styles.content}>
-        <p>Fala galeraa 👋 </p>
-        <p>
-          Acabei de subir mais um projeto no meu portifa. É um projeto que fiz
-          no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀
-        </p>
-        <p>
-          <a href="#"> 👉 lucca.design/doctorcare </a>
-        </p>
-
-        <p>
-          <a href="#"> #novoprojeto </a> <a href="#">#nlw </a>
-          <a href="#">#rocketseat </a>
-        </p>
+        {content.map((line) => {
+          if (line.type === "paragraph") {
+            return <p>{line.content}</p>;
+          } else if (line.type === "link") {
+            return (
+              <p>
+                <a href="#">{line.content}</a>
+              </p>
+            );
+          }
+        })}
       </div>
-      <form className={styles.commentForm}>
+      <form onSubmit={handleAddComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
-        <textarea placeholder="Deixe um comentário" />
+        <textarea
+          onChange={handleCommentText}
+          placeholder="Deixe um comentário"
+        />
         <footer>
           <button type="submit">Publicar</button>
         </footer>
       </form>
       <div className={styles.commentList}>
-        <Comment />
+        {comments.map((comment) => {
+          return <Comment content={comment.content} date={comment.date} />;
+        })}
       </div>
     </article>
   );
